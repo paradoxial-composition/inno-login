@@ -1,22 +1,31 @@
 import React from 'react';
+import axios from 'axios';
 import {
     Form, Icon, Input, Button, Checkbox,
   } from 'antd';
 import RegisterForm from '../RegisterForm';
   /* jshint ignore:start */
-  class LoginForm extends React.Component {
+class LoginForm extends React.Component {
 
-    constructor() {
-      super();
-      this.state = {
-          redirect: false,
-          forgot: false,
-          signup: false,
-          email_forgot: '',
-          email: '',
-          password: '',
-      };
-      console.log('reload ....')
+  constructor() {
+    super();
+    this.state = {
+        redirect: false,
+        forgot: false,
+        signup: false,
+        email_forgot: '',
+        email: '',
+        password: '',
+        backendPath: `http://localhost:8081/login`,
+        editParams: false
+    };
+    console.log('reload ....')
+  }
+
+  loginPath = () => {
+    this.setState({
+      backendPath: this.props.path
+    });// changes the backend path to the one mentioned in the parent
   }
 
   handleForgotSubmit = (e) => {
@@ -31,73 +40,92 @@ import RegisterForm from '../RegisterForm';
     });
   }
 
-    handleSubmit = (e) => {
+  handleSubmit = (e) => {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          this.setState({
-            redirect: true
-        });
+
+
+          const user = {
+            email: this.state.email,
+            password: this.state.password
+          }
+      
+          axios.post(this.backendPath,  user )
+           .then(res => {
+              console.log(res);
+              console.log(res.data);
+      
+              this.setState({
+                email: '',
+                password: '',
+                redirect: true,
+              });
+             })
         }
-      });
-    }
 
-    handleClick = (e) => {
-      e.preventDefault();
-          console.log('Forgot password :/ ?');
-          if( this.state.forgot) {
-            this.setState({
-              forgot: false
-          });
-          } else {
-            this.setState({
-              forgot: true
-          });
-          }
-    };
 
-    handleSignUpClick = (e) => {
-      e.preventDefault();
-      if( this.state.signup) {
-        this.setState({
-          signup: false
       });
-      } else {
-        this.setState({
-          signup: true
+  }
+
+  handleClick = (e) => {
+    e.preventDefault();
+    console.log('Forgot password :/ ?');
+    if( this.state.forgot) {
+      this.setState({
+        forgot: false
       });
+    } 
+      else {
+        this.setState({
+          forgot: true
+        });
       }
-    }
-    
-    handleClickConfirm = (e) => {
-      e.preventDefault();
-          if( this.state.forgot) {
-            this.setState({
-              forgot: false
-          });
-          } else {
-            this.setState({
-              forgot: true
-          });
-          }
-          //const email= this.state.email;
-
-          //axios backend call
-
     };
+
+  handleSignUpClick = (e) => {
+    e.preventDefault();
+    if( this.state.signup) {
+      this.setState({
+        signup: false
+      });
+    } 
+    else {
+      this.setState({
+        signup: true
+      });
+    }
+  }
+    
+  handleClickConfirm = (e) => {
+    e.preventDefault();
+    if( this.state.forgot) {
+      this.setState({
+        forgot: false
+      });
+    } 
+    else {
+      this.setState({
+        forgot: true
+      });
+    }
+          
+
+  };
 
     render() {
-
       const { getFieldDecorator } = this.props.form;
 
       const redirect = this.state.redirect;
       const forgot = this.state.forgot;
       const signup = this.state.signup;
-
+      if (this.state.editParams) {
+        this.loginPath();
+      }
       if(redirect) {
         // add redirect ex: return <Redirect to="/welcome" />
-    } else {
+    } else { 
         if (signup) {
           //add redirect ex: return <Redirect to="/login/register" />
           return <RegisterForm />
@@ -169,5 +197,4 @@ import RegisterForm from '../RegisterForm';
 }
   
   const WrappedLoginForm = Form.create({ name: 'normal_login' })(LoginForm);
-
   export default WrappedLoginForm;

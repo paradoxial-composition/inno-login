@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {
     Form, Icon, Input, Button, Checkbox,
   } from 'antd';
@@ -11,13 +12,19 @@ import LoginForm from '../LoginForm';
       this.state = {
           redirect: false,
           email: '',
-          password: ''
+          password: '',
+          backendPath: `http://localhost:8081/register`
       };
       
       this.handleSubmit = this.handleSubmit.bind(this);
       console.log('reload ....')
   }
 
+  registerPath = () => {
+    this.setState({
+      backendPath: this.props.path
+    });
+  }
 
   handleClick = (e) => {
     e.preventDefault();
@@ -36,12 +43,27 @@ import LoginForm from '../LoginForm';
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-        this.setState({
-          redirect: true
-      });
+      if (!err){
+      console.log('Received values of form: ', values);
+
+
+      const user = {
+        email: this.state.email,
+        password: this.state.password
       }
+  
+      axios.post(this.backendPath,  user )
+       .then(res => {
+          console.log(res);
+          console.log(res.data);
+  
+          this.setState({
+            email: '',
+            password: '',
+            redirect: true,
+          });
+         })
+    }
     });
   }
 
