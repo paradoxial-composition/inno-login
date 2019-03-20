@@ -4,6 +4,7 @@ import {
     Form, Icon, Input, Button, Checkbox,
   } from 'antd';
 import LoginForm from '../LoginForm';
+
   /* jshint ignore:start */
   class RegisterForm extends React.Component {
 
@@ -13,17 +14,10 @@ import LoginForm from '../LoginForm';
           redirect: false,
           email: '',
           password: '',
-          backendPath: `http://localhost:8081/register`
       };
       
       this.handleSubmit = this.handleSubmit.bind(this);
       console.log('reload ....')
-  }
-
-  registerPath = () => {
-    this.setState({
-      backendPath: this.props.path
-    });
   }
 
   handleClick = (e) => {
@@ -74,7 +68,6 @@ import LoginForm from '../LoginForm';
       const { getFieldDecorator } = this.props.form;
 
       const redirect = this.state.redirect;
-      const forgot = this.state.forgot;
 
       if(redirect) {
         //redirection ex: return <Redirect to="/login/login" />
@@ -111,7 +104,9 @@ import LoginForm from '../LoginForm';
     }
   }
 }
-  
+  RegisterForm.defaultProps = {
+    backendPath: `http://localhost:8081/register`
+  }
   const WrappedLoginForm = Form.create({ name: 'normal_login' })(RegisterForm);
 
   export default WrappedLoginForm;

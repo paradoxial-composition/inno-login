@@ -5,9 +5,10 @@ import {
   } from 'antd';
 import RegisterForm from '../RegisterForm';
   /* jshint ignore:start */
+
 class LoginForm extends React.Component {
 
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
         redirect: false,
@@ -15,17 +16,10 @@ class LoginForm extends React.Component {
         signup: false,
         email_forgot: '',
         email: '',
-        password: '',
-        backendPath: `http://localhost:8081/login`,
-        editParams: false
+        password: ''
     };
-    console.log('reload ....')
-  }
 
-  loginPath = () => {
-    this.setState({
-      backendPath: this.props.path
-    });// changes the backend path to the one mentioned in the parent
+    console.log('reload ....')
   }
 
   handleForgotSubmit = (e) => {
@@ -120,9 +114,7 @@ class LoginForm extends React.Component {
       const redirect = this.state.redirect;
       const forgot = this.state.forgot;
       const signup = this.state.signup;
-      if (this.state.editParams) {
-        this.loginPath();
-      }
+      
       if(redirect) {
         // add redirect ex: return <Redirect to="/welcome" />
     } else { 
@@ -195,6 +187,8 @@ class LoginForm extends React.Component {
     }
   }
 }
-  
+ LoginForm.defaultProps = {
+  backendPath: 'http://localhost:8081/login'
+ }
   const WrappedLoginForm = Form.create({ name: 'normal_login' })(LoginForm);
   export default WrappedLoginForm;
