@@ -37,29 +37,38 @@ import LoginForm from '../LoginForm';
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      if (!err){
-      console.log('Received values of form: ', values);
+      if (!err) {
+        console.log('Received values of form: ', values);
 
+        try {
+          const user = {
+            email: this.state.email,
+            password: this.state.password
+          }
+        } catch (e) {
+          console.log("fields are undefined");
+        }
 
-      const user = {
-        email: this.state.email,
-        password: this.state.password
+        try {
+
+        console.log("handleSubmit has passed, calling back end now");
+        // axios.post(this.backendPath,  user )
+        //  .then(res => {
+        //     console.log(res);
+        //     console.log(res.data);
+    
+        //     this.setState({
+        //       email: '',
+        //       password: '',
+        //       redirect: true,
+        //     });
+        //    })
+        } catch (e) {
+          console.log("backend connection failed.");
+        }
       }
-  
-      axios.post(this.backendPath,  user )
-       .then(res => {
-          console.log(res);
-          console.log(res.data);
-  
-          this.setState({
-            email: '',
-            password: '',
-            redirect: true,
-          });
-         })
-    }
-    });
-  }
+  });
+}
 
   
 

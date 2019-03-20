@@ -30,6 +30,8 @@ class LoginForm extends React.Component {
         this.setState({
           forgot: false
       });
+
+      console.log("handleForgotSubmit has passed, calling back end now");
       }
     });
   }
@@ -40,27 +42,34 @@ class LoginForm extends React.Component {
         if (!err) {
           console.log('Received values of form: ', values);
 
-
-          const user = {
-            email: this.state.email,
-            password: this.state.password
+          try {
+            const user = {
+              email: this.state.email,
+              password: this.state.password
+            }
+          } catch (e) {
+            console.log("fields are undefined");
           }
+
+          try {
+
+          console.log("handleSubmit has passed, calling back end now");
+          // axios.post(this.backendPath,  user )
+          //  .then(res => {
+          //     console.log(res);
+          //     console.log(res.data);
       
-          axios.post(this.backendPath,  user )
-           .then(res => {
-              console.log(res);
-              console.log(res.data);
-      
-              this.setState({
-                email: '',
-                password: '',
-                redirect: true,
-              });
-             })
+          //     this.setState({
+          //       email: '',
+          //       password: '',
+          //       redirect: true,
+          //     });
+          //    })
+          } catch (e) {
+            console.log("backend connection failed.");
+          }
         }
-
-
-      });
+    });
   }
 
   handleClick = (e) => {
@@ -114,7 +123,7 @@ class LoginForm extends React.Component {
       const redirect = this.state.redirect;
       const forgot = this.state.forgot;
       const signup = this.state.signup;
-      
+
       if(redirect) {
         // add redirect ex: return <Redirect to="/welcome" />
     } else { 
@@ -128,15 +137,15 @@ class LoginForm extends React.Component {
               <Form onSubmit={this.handleForgotSubmit} className="login-form-forgot">
               <Form.Item>
                 {getFieldDecorator('email_forgot', {
-                  rules: [{ required: true, message: 'Please input your email!' }],
+                  rules: [{ required: true, message: 'Please input your email!' },
+                          { type: 'email', message: 'Please input a valid email address !' }],
                 })(
                   <Input prefix={<Icon type="email" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="email" onChange={(event) => this.setState({email_forgot:event.target.value} )}/>
                 )}
               </Form.Item>
               <Form.Item>
                 <a className="login-form-forgot" onClick={this.handleClick}>Cancel</a>
-                <Button type="primary" htmlType="submit" className="login-form-button" 
-                onClick={this.handleForgotSubmit}
+                <Button type="primary" htmlType="submit" className="login-form-button"
                 >
                   Confirm
                 </Button>
