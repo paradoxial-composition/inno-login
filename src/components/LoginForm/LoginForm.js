@@ -3,40 +3,28 @@ import axios from 'axios';
 import {
     Form, Icon, Input, Button, Checkbox,
   } from 'antd';
-import RegisterForm from '../RegisterForm';
-  /* jshint ignore:start */
 
 class LoginForm extends React.Component {
 
   constructor(props) {
     super();
     this.state = {
-        redirect: false,
-        forgot: false,
-        signup: false,
-        email_forgot: '',
         email: '',
         password: ''
     };
+  
+    this.handleForgetClick= this.handleForgetClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    //this.handleClick = this.handleClick.bind(this);
+    this.handleSignUpClick = this.handleSignUpClick.bind(this);
+    // this.handleClickConfirm = this.handleClickConfirm.bind(this);
+
 
     console.log('reload ....')
   }
 
-  handleForgotSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-        this.setState({
-          forgot: false
-      });
 
-      console.log("handleForgotSubmit has passed, calling back end now");
-      }
-    });
-  }
-
-  handleSubmit = (e) => {
+  handleSubmit (e) {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
         if (!err) {
@@ -62,8 +50,9 @@ class LoginForm extends React.Component {
           //     this.setState({
           //       email: '',
           //       password: '',
-          //       redirect: true,
+          //       
           //     });
+          // TODO add toSignIn method
           //    })
           } catch (e) {
             console.log("backend connection failed.");
@@ -72,90 +61,37 @@ class LoginForm extends React.Component {
     });
   }
 
-  handleClick = (e) => {
-    e.preventDefault();
-    console.log('Forgot password :/ ?');
-    if( this.state.forgot) {
-      this.setState({
-        forgot: false
-      });
-    } 
-      else {
-        this.setState({
-          forgot: true
-        });
-      }
-    };
 
-  handleSignUpClick = (e) => {
+  handleSignUpClick (e) {
     e.preventDefault();
-    if( this.state.signup) {
-      this.setState({
-        signup: false
-      });
-    } 
-    else {
-      this.setState({
-        signup: true
-      });
-    }
+    this.props.toRegisterForm();
   }
-    
-  handleClickConfirm = (e) => {
-    e.preventDefault();
-    if( this.state.forgot) {
-      this.setState({
-        forgot: false
-      });
-    } 
-    else {
-      this.setState({
-        forgot: true
-      });
-    }
-          
-
+  
+  handleForgetClick (e) {
+		e.preventDefault();
+		this.props.toForgetForm();
   };
+  
+  // handleClickConfirm (e) {
+  //   e.preventDefault();
+  //   if( this.state.forgot) {
+  //     this.setState({
+  //       forgot: false
+  //     });
+  //   } 
+  //   else {
+  //     this.setState({
+  //       forgot: true
+  //     });
+  //   }
+          
 
     render() {
       const { getFieldDecorator } = this.props.form;
 
-      const redirect = this.state.redirect;
-      const forgot = this.state.forgot;
-      const signup = this.state.signup;
-
-      if(redirect) {
-        // add redirect ex: return <Redirect to="/welcome" />
-    } else { 
-        if (signup) {
-          //add redirect ex: return <Redirect to="/login/register" />
-          return <RegisterForm />
-        } else {
-        if (forgot) {
-            //Forgot Password Form
-            return (
-              <Form onSubmit={this.handleForgotSubmit} className="login-form-forgot">
-              <Form.Item>
-                {getFieldDecorator('email_forgot', {
-                  rules: [{ required: true, message: 'Please input your email!' },
-                          { type: 'email', message: 'Please input a valid email address !' }],
-                })(
-                  <Input prefix={<Icon type="email" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="email" onChange={(event) => this.setState({email_forgot:event.target.value} )}/>
-                )}
-              </Form.Item>
-              <Form.Item>
-                <a className="login-form-forgot" onClick={this.handleClick}>Cancel</a>
-                <Button type="primary" htmlType="submit" className="login-form-button"
-                >
-                  Confirm
-                </Button>
-              </Form.Item>
-            </Form>
-            );
-        } else {
             //Login Form
             return (
-              <Form onSubmit={this.handleSubmit} className="login-form">
+              <Form id="form-login" name="form-login" onSubmit={this.handleSubmit} className="login-form">
                 <Form.Item>
                   {getFieldDecorator('userName', {
                     rules: [{ required: true, message: 'Please input your username!' }],
@@ -177,7 +113,7 @@ class LoginForm extends React.Component {
                   })(
                     <Checkbox>Remember me</Checkbox>
                   )}
-                  <a className="login-form-forgot" href="#" onClick={this.handleClick}>Forgot password</a>
+                  <a className="login-form-forgot" href="#" onClick={this.handleForgetClick}>Forgot password</a>
                   <Button type="primary" htmlType="submit" className="login-form-button"
                   
                   >
@@ -191,10 +127,8 @@ class LoginForm extends React.Component {
                 </Form.Item>
               </Form>
             );
-            }
-          }
     }
-  }
+
 }
  LoginForm.defaultProps = {
   backendPath: 'http://localhost:8081/login'

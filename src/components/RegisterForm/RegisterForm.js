@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
     Form, Icon, Input, Button, Checkbox,
   } from 'antd';
-import LoginForm from '../LoginForm';
 
   /* jshint ignore:start */
   class RegisterForm extends React.Component {
@@ -17,24 +16,17 @@ import LoginForm from '../LoginForm';
       };
       
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.handleCancelClick = this.handleCancelClick.bind(this);
       console.log('reload ....')
   }
 
-  handleClick = (e) => {
+  handleCancelClick(e) {
     e.preventDefault();
-    if( this.state.signup) {
-      this.setState({
-        redirect: false
-    });
-    } else {
-      this.setState({
-        redirect: true
-    });
-    }
+    this.props.toLoginForm();
   }
 
   
-  handleSubmit = (e) => {
+  handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -60,9 +52,9 @@ import LoginForm from '../LoginForm';
         //     this.setState({
         //       email: '',
         //       password: '',
-        //       redirect: true,
         //     });
         //    })
+        this.props.toLoginForm();
         } catch (e) {
           console.log("backend connection failed.");
         }
@@ -75,13 +67,6 @@ import LoginForm from '../LoginForm';
     render() {
 
       const { getFieldDecorator } = this.props.form;
-
-      const redirect = this.state.redirect;
-
-      if(redirect) {
-        //redirection ex: return <Redirect to="/login/login" />
-          return <LoginForm />
-    } else {
             //register Form
             return (
               <Form onSubmit={this.handleSubmit} className="login-form">
@@ -100,7 +85,7 @@ import LoginForm from '../LoginForm';
                   )}
                 </Form.Item>
                 <Form.Item>
-                  <a className="login-form-forgot" onClick={this.handleClick}>Cancel</a>
+                  <a className="login-form-forgot" onClick={this.handleCancelClick}>Cancel</a>
                   <Button type="primary" htmlType="submit" className="login-form-button"
                   
                   >
@@ -110,7 +95,6 @@ import LoginForm from '../LoginForm';
               </Form>
             );
             
-    }
   }
 }
   RegisterForm.defaultProps = {
